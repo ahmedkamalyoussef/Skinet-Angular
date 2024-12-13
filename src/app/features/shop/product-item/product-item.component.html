@@ -1,0 +1,9 @@
+@if(product){
+    <mat-card appearance="raised">
+        <img mat-card-image [src]="product.imageUrl" alt="photo of a {{product.name}}">
+        <mat-card-content class="mt-2">
+            <h2 class="text-sm font-semibold uppercase">{{product.name}}</h2>
+            <p class="text-sm text-gray-600">{{product.description}}</p>
+        </mat-card-content>
+    </mat-card>
+}
