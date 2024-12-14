@@ -71,3 +71,15 @@ button.match-input-hieght{
 .mdc-notched-outline__notch{
     border-right-style: none !important;
 }
+
+.mat-mdc-snack-bar-container.error-snackbar{
+    --mdc-snackbar-container-color: rgb(220, 2, 2);
+    --mat-snack-bar-button-color: #fff;
+    --mdc-snackbar-supporting-text-color: #fff;
+}
+
+.mat-mdc-snack-bar-container.success-snackbar{
+    --mdc-snackbar-container-color: #5cd161;
+    --mat-snack-bar-button-color: #ffffff;
+    --mdc-snackbar-supporting-text-color: #ffffff;
+}

@@ -1,16 +1,51 @@
-.custom-badge ,mat-badge-content{
+.custom-badge, mat-badge-content {
     width: 24px;
     height: 24px;
     line-height: 24px;
     font-size: 14px;
 }
-.custom-badge mat-icon{
+
+.custom-badge mat-icon {
     font-size: 25px;
     width: 25px;
     height: 25px;
 }
-a{
-    &.active{
+
+a {
+    &.active {
         color: #7b00fa;
+    }
+}
+
+.error-page, .not-found-page {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    
+    .white-button {
+        color: white !important;
+        border-color: white !important;
+    }
+    
+    .white-icon {
+        color: white !important;
+        
+        ::ng-deep .mat-badge-content {
+            background: white !important;
+            color: #4d068f !important;
+        }
+    }
+    
+    mat-icon {
+        color: white !important;
+    }
+    
+    a {
+        color: white !important;
+        
+        &.active {
+            color: white !important;
+            font-weight: bold;
+        }
     }
 }
