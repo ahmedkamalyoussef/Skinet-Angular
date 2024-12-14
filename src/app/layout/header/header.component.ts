@@ -4,6 +4,7 @@ import { MatButton } from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 @Component({
   selector: 'app-header',
+  standalone: true,
   imports: [
     MatIcon,
     MatButton,
