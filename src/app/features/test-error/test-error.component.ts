@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { ErrorService } from '../../core/services/error.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-test-error',
@@ -11,6 +12,8 @@ import { ErrorService } from '../../core/services/error.service';
   styleUrl: './test-error.component.scss'
 })
 export class TestErrorComponent {
+  constructor(private router: Router) {}
+
   errService = inject(ErrorService);
   validationErrors?: string[];
   get400Error() {
@@ -32,6 +35,7 @@ export class TestErrorComponent {
       next: response => console.log(response),
       error: error => console.log(error)
     });
+    this.router.navigateByUrl('/not-found');
   }
 
   get500Error() { 
@@ -39,6 +43,7 @@ export class TestErrorComponent {
       next: response => console.log(response),  
       error: error => console.log(error)
     });
+    this.router.navigateByUrl('/server-error');
   }
 
   get400ValidationError() { 
