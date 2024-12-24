@@ -1,0 +1,11 @@
+<mat-form-field appearance="outline" class="w-full mb-4">
+    <mat-label>{{label}}</mat-label>
+    <input [formControl]="control" matInput type={{type}} placeholder={{label}}>
+    <mat-error *ngIf="control.hasError('required')">
+        {{label}} is <strong>required</strong>
+      </mat-error>
+      
+      <mat-error *ngIf="control.hasError('pattern')">
+        The {{label}} does not match the required pattern.
+      </mat-error>
+</mat-form-field>
