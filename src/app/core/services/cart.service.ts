@@ -4,6 +4,7 @@ import { Cart, CartItem } from '../../shared/models/cart';
 import { environment } from '../../../environments/environment';
 import { Product } from '../../shared/models/product';
 import { map } from 'rxjs';
+import { DeliveryMethod } from '../../shared/models/deliveryMethod';
 
 @Injectable({
   providedIn: 'root'
@@ -11,12 +12,14 @@ import { map } from 'rxjs';
 export class CartService {
   private http = inject(HttpClient);
   cart = signal<Cart | null>(null);
+  selectedDeliveryMethod = signal<DeliveryMethod | null>(null);
   itemsCount = computed(() => this.cart()?.items.reduce((acc, item) => acc + item.quantity, 0));
   totals = computed(()=>{
     const cart = this.cart();
+    const deliveryMethod = this.selectedDeliveryMethod();
     if (!cart) return null;
     const subTotal = cart.items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-    const shipping = subTotal ? subTotal * 0.1 : 0;
+    const shipping = deliveryMethod ? deliveryMethod.price : 0;
     const discount = subTotal ? subTotal * 0.05 : 0;
     const total = subTotal + shipping - discount;
     return {subTotal, shipping, discount, total};
@@ -27,7 +30,6 @@ export class CartService {
     return this.http.get<Cart>(environment.apiUrl + 'cart?id=' + id).pipe(
       map(cart=>{
         this.cart.set(cart);
-        console.log("from api");
         return cart;
       })
     )
@@ -45,6 +47,7 @@ export class CartService {
     }
     if(cart.items.length === 0){
       this.deleteCart();
+      this.cart.set(null);
     }else{
       this.setCart(cart);
     }
@@ -55,6 +58,7 @@ export class CartService {
       next: ()=>{
         localStorage.removeItem('cartId');  
         this.cart.set(null);
+        this.itemsCount();
       } 
     });
   }

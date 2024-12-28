@@ -11,7 +11,6 @@ export class InitService {
   private accountService = inject(AccountService)
   init(){
     const cartId =localStorage.getItem("cartId");
-    console.log("from init");
     const cart = cartId ? this.cartService.getCart(cartId) : of(null)
     return forkJoin({
       cart: cart,
