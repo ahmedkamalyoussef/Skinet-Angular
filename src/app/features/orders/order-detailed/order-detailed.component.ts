@@ -1,18 +1,24 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { OrderService } from '../../../core/services/order.service';
 import { Order } from '../../../shared/models/order';
-import { ActivatedRoute } from '@angular/router';
-import { MatButton } from '@angular/material/button';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { CurrencyPipe, DatePipe } from '@angular/common';
+import { AddressPipe } from '../../../shared/pipes/address.pipe';
+import { PaymentDetailsPipe } from '../../../shared/pipes/payment-details.pipe';
+import { MatButton } from '@angular/material/button';
 
 @Component({
   selector: 'app-order-detailed',
+  standalone: true,
   imports: [
-    MatButton,
     MatCardModule,
     DatePipe,
-    CurrencyPipe
+    CurrencyPipe,
+    AddressPipe,
+    PaymentDetailsPipe,
+    MatButton,
+    RouterLink
   ],
   templateUrl: './order-detailed.component.html',
   styleUrl: './order-detailed.component.scss'
