@@ -5,7 +5,7 @@
         {{label}} is <strong>required</strong>
       </mat-error>
       
-      <mat-error *ngIf="control.hasError('pattern')">
+      <mat-error **ngIf="condition"="control.hasError('pattern')">
         The {{label}} does not match the required pattern.
       </mat-error>
 </mat-form-field>

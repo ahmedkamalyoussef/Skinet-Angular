@@ -4,6 +4,7 @@ import { MatFormField } from '@angular/material/form-field';
 import { MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatError } from '@angular/material/form-field';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-text-input',
@@ -13,7 +14,8 @@ import { MatError } from '@angular/material/form-field';
     MatFormField,
     MatLabel,
     MatInput,
-    MatError
+    MatError,
+    CommonModule
   ],
   templateUrl: './text-input.component.html',
   styleUrl: './text-input.component.scss'
