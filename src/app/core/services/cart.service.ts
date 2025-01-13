@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { Cart, CartItem } from '../../shared/models/cart';
+import { Cart, CartItem, Coupon } from '../../shared/models/cart';
 import { environment } from '../../../environments/environment';
 import { Product } from '../../shared/models/product';
-import { map } from 'rxjs';
+import { firstValueFrom, map, tap } from 'rxjs';
 import { DeliveryMethod } from '../../shared/models/deliveryMethod';
 
 @Injectable({
@@ -14,18 +14,28 @@ export class CartService {
   cart = signal<Cart | null>(null);
   selectedDeliveryMethod = signal<DeliveryMethod | null>(null);
   itemsCount = computed(() => this.cart()?.items.reduce((acc, item) => acc + item.quantity, 0));
+
   totals = computed(()=>{
     const cart = this.cart();
     const deliveryMethod = this.selectedDeliveryMethod();
     if (!cart) return null;
     const subTotal = cart.items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+    let discountValue = 0;
+    if (cart.coupon) {
+      if (cart.coupon.amountOff) {
+        discountValue = cart.coupon.amountOff;
+      } else if (cart.coupon.percentOff) {
+        discountValue = subTotal * (cart.coupon.percentOff / 100);
+      }
+    }
     const shipping = deliveryMethod ? deliveryMethod.price : 0;
-    const discount = subTotal ? subTotal * 0.05 : 0;
-    const total = subTotal + shipping - discount;
-    return {subTotal, shipping, discount, total};
+    const total = subTotal + shipping - discountValue;
+    return {subTotal, shipping, discount: discountValue, total};
   });
 
-
+  applyDiscount(code: string) {
+    return this.http.get<Coupon>(environment.apiUrl + 'coupons/' + code);
+  }
   getCart(id: string) {
     return this.http.get<Cart>(environment.apiUrl + 'cart?id=' + id).pipe(
       map(cart=>{
@@ -35,7 +45,7 @@ export class CartService {
     )
   }
 
-  removeItemFromCart(productId: number,quantity=1) {
+  async removeItemFromCart(productId: number,quantity=1) {
     const cart = this.cart();
     if (!cart) return;
     const itemIndex = cart.items.findIndex(item => item.productId === productId);
@@ -49,7 +59,7 @@ export class CartService {
       this.deleteCart();
       this.cart.set(null);
     }else{
-      this.setCart(cart);
+      await firstValueFrom(this.setCart(cart));
     }
   }
 
@@ -64,17 +74,20 @@ export class CartService {
   }
 
   setCart(cart: Cart) {
-    return this.http.post<Cart>(environment.apiUrl + 'cart', cart).subscribe({
-      next: response => this.cart.set(response)
-    });
+    return this.http.post<Cart>(environment.apiUrl + 'cart', cart).pipe(
+      tap(cart => {
+        this.cart.set(cart);
+        console.log(cart.coupon);
+      })
+    )
   }
-  addItemToCart(item: CartItem |Product, quantity=1) {
+  async addItemToCart(item: CartItem |Product, quantity=1) {
     const cart = this.cart() ?? this.createCart();
     if (this.isProduct(item)) {
       item = this.mapProductToCartItem(item);
     }
     cart.items=this.addOrUpdateItem(cart, item, quantity);
-    this.setCart(cart);
+    await firstValueFrom(this.setCart(cart));
   }
 
   private createCart(): Cart {

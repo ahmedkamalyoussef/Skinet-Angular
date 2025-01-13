@@ -106,7 +106,7 @@ export class StripeService {
       throw new Error(result.error.message);
     }
     const clientSecret = this.cartService.cart()?.clientSecret;
-    if(clientSecret && stripe){
+    if (clientSecret && stripe) {
       return await stripe.confirmPayment({
         clientSecret: clientSecret,
         confirmParams: {
@@ -118,13 +118,17 @@ export class StripeService {
       throw new Error('Stripe is not loaded');
     }
   }
-  
+
   createOrUpdatePaymentIntent() {
     const cart = this.cartService.cart();
+    const hasClientSecret = !!cart?.clientSecret;
     if (!cart) throw new Error('Cart is empty');
     return this.http.post<Cart>(`${this.baseUrl}payments/` + cart.id, {}).pipe(
-      map(cart => {
-        this.cartService.setCart(cart);
+      map(async cart => {
+        if (!hasClientSecret) {
+          await firstValueFrom(this.cartService.setCart(cart));
+          return cart;
+        }
         return cart;
       })
     )

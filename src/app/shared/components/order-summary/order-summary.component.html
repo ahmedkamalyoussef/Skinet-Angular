@@ -41,14 +41,36 @@
         </div>
         }
     </div>
+
+
     <div class="space-y-4 rounded-lg border border-gray-200 bg-white shadow-sm p-4">
-        <form class="space-y-2 flex flex-col">
-            <label class="mb-2 block text-sm font-medium">Have a Coupon?</label>
+        <form #form="ngForm" (ngSubmit)="applyCouponCode()" class="space-y-2 flex flex-col">
+            <label class="mb-2 block text-sm font-mediem">
+                Do you have a voucher code?
+            </label>
+            <div *ngIf="cartService.cart()?.coupon as coupon" class="flex justify-between">
+                <span class="text-sm font-semibold">{{coupon.name}} applied</span>
+                <button (click)="removeCouponCode()" mat-icon-button>
+                    <mat-icon color="warn">delete</mat-icon>
+                </button>
+            </div>
             <mat-form-field appearance="outline">
-                <mat-label>Coupon Code</mat-label>
-                <input matInput placeholder="Coupon Code">
+                <mat-label>Voucher code</mat-label>
+                <input [disabled]="!!cartService.cart()?.coupon" [(ngModel)]="code" name="code" type="text" matInput>
             </mat-form-field>
-            <button mat-flat-button color="primary">Apply Code</button>
+            <button [disabled]="!!cartService.cart()?.coupon" type="submit" mat-flat-button>Apply code</button>
         </form>
     </div>
 </div>
+
+
+<!-- <div class="space-y-4 rounded-lg border border-gray-200 bg-white shadow-sm p-4">
+    <form class="space-y-2 flex flex-col">
+        <label class="mb-2 block text-sm font-medium">Have a Coupon?</label>
+        <mat-form-field appearance="outline">
+            <mat-label>Coupon Code</mat-label>
+            <input matInput placeholder="Coupon Code">
+        </mat-form-field>
+        <button mat-flat-button color="primary">Apply Code</button>
+    </form>
+</div> -->
